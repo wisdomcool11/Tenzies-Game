@@ -8,12 +8,17 @@ import Die from './component/Die'
 import RollDieButton from './component/RollDieButton'
 import { nanoid } from 'nanoid';
 
+// importing confetti
+import Confetti from "react-confetti";
+
 function App() {
 
-  const [dice, setDice] = useState (generateAllNewDic());
+  const [dice, setDice] = useState (()=> generateAllNewDic());
+
+  const gameWon = dice.every(die => die.isHeld) && 
+  dice.every(die => die.value === dice[0].value);
 
   function generateAllNewDic(){
-
     return new Array(10)
       .fill(0)
       .map(()=>(
@@ -26,17 +31,23 @@ function App() {
   }
 
   function rollDiceButton (){
-    setDice(oldDice =>{
-      return oldDice.map(die => {
-        return die.isHeld ?
-          die :
-          {...die, value: Math.floor(Math.random() * 6)}
+
+    if(!gameWon){
+      setDice(oldDice =>{
+        return oldDice.map(die => {
+          return die.isHeld ?
+            die :
+            {...die, value: Math.floor(Math.random() * 6)}
+        })
       })
-    })
+
+    }else{
+      setDice(generateAllNewDic())
+    }
   }
 
   function hold (id){
-    console.log("Button id: ", id);
+    // console.log("Button id: ", id);
     setDice(oldDice =>{
       return oldDice.map(die =>{
         return die.id === id ? 
@@ -55,9 +66,17 @@ function App() {
     />
   })
 
+
   return (
     <>
       <main className='main-style'>
+        {gameWon && <Confetti />}
+
+        <div aria-live='polite' className='sr-only'>
+          {gameWon &&
+          <p>Congratulation! You won! Press "New Game: to restart Game</p>
+          }
+        </div>
         <h1 className='title'>Tenzies</h1>
 
         <p className='instructions'>
@@ -69,10 +88,12 @@ function App() {
           {dieElement}
         </div>
 
-        <RollDieButton  rollDiceButton={rollDiceButton}/>
+        <RollDieButton  gameWon={gameWon} rollDiceButton={rollDiceButton}/>
       </main>
     </>
   )
 }
+
+
 
 export default App

@@ -1,5 +1,8 @@
 
 
+// importing confetti
+import Confetti from "react-confetti";
+
 function RollDieButton (props){
     return (
         <button 
@@ -9,7 +12,7 @@ function RollDieButton (props){
             active:translate-y-1 active:shadow-lg transition-all
             "
         >
-            Roll Dice
+            { props.gameWon ? "New Game":"Roll Dice"}
         </button>
     )
 }

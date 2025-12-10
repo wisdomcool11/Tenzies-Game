@@ -13,6 +13,9 @@ function Die (props){
             className="die-button"
             id={id} 
             onClick={()=> hold(id)}
+            aria-pressed={props.isHeld}
+            aria-label={`Die with Value ${props.value},
+            ${props.isHeld ? "Held": "not Held"}`}
         >
             {value}    
         </button>
